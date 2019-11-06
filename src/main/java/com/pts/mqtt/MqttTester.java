@@ -12,7 +12,7 @@ public class MqttTester {
         for (int i = 0; i < 100; i++) {
             Thread.sleep(500);
             sensorEngine.send(random.nextDouble() * 60 + random.nextDouble() * 60 + random.nextDouble() * 60
-                    + random.nextDouble() * 60);
+                    + random.nextDouble() * 60+ random.nextDouble() * 60+ random.nextDouble() * 60);
         }
     }
 }

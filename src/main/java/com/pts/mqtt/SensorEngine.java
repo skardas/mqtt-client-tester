@@ -1,6 +1,7 @@
 package com.pts.mqtt;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.eclipse.paho.client.mqttv3.*;
 
 import java.nio.charset.Charset;
@@ -25,7 +26,7 @@ public class SensorEngine implements Runnable {
         this.username = username;
         this.password = password;
         this.TOPIC = TOPIC;
-        gson = new Gson();
+        gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
     }
 
     public void run() {
