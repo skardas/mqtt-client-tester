@@ -38,6 +38,7 @@ public class SensorEngine implements Runnable {
             options.setCleanSession(true);
             options.setConnectionTimeout(10);
             options.setUserName(username);
+            if(password != null)
             options.setPassword(password.toCharArray());
             publisher.connect(options);
 
@@ -61,7 +62,6 @@ public class SensorEngine implements Runnable {
         return true;
     }
     static class SensorData {
-        int companyId = 1;
         int sensorId = 1;
         double value;
         Date time = Calendar.getInstance().getTime();
