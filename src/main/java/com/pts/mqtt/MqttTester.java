@@ -10,7 +10,7 @@ public class MqttTester {
         Random random = new Random();
 
         for (int i = 0; i < 100; i++) {
-            Thread.sleep(500);
+            Thread.sleep(400);
             double value = random.nextDouble() * 60 + random.nextDouble() * 60 + random.nextDouble() * 60
                     + random.nextDouble() * 60+ random.nextDouble() * 60+ random.nextDouble() * 60;
 
