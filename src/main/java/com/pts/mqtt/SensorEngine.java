@@ -16,8 +16,7 @@ public class SensorEngine implements Runnable {
     String password;
     String publisherId = UUID.randomUUID().toString();
     IMqttClient publisher;
-    String TOPIC = "sensor/1";
-
+    String TOPIC;
     Gson gson;
 
     public SensorEngine(String hostIp, int port, String username, String password, String TOPIC) {
@@ -52,22 +51,14 @@ public class SensorEngine implements Runnable {
             return;
         }
     }
-    public boolean send(double value)
+    public boolean send(Object data)
     {
         try {
-            publisher.publish(TOPIC, new MqttMessage(gson.toJson(new SensorData(value)).getBytes(Charset.forName("UTF-8"))));
+            publisher.publish(TOPIC, new MqttMessage(gson.toJson(data).getBytes(Charset.forName("UTF-8"))));
         } catch (MqttException e) {
             return false;
         }
         return true;
     }
-    static class SensorData {
-        int sensorId = 1;
-        double value;
-        Date time = Calendar.getInstance().getTime();
 
-        public SensorData(double value) {
-            this.value = value;
-        }
-    }
 }
