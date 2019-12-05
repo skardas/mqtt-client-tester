@@ -61,4 +61,16 @@ public class SensorEngine implements Runnable {
         return true;
     }
 
+    public void close() {
+        try {
+            publisher.unsubscribe(TOPIC);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+        try {
+            publisher.close();
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
 }
