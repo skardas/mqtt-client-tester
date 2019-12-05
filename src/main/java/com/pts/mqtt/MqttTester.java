@@ -1,5 +1,6 @@
 package com.pts.mqtt;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class MqttTester {
@@ -9,8 +10,8 @@ public class MqttTester {
         new Thread(sensorEngine).start();
         Random random = new Random();
 
-        for (int i = 0; i < 1000; i++) {
-            Thread.sleep(400);
+        for (int i = 0; i < 10000; i++) {
+            Thread.sleep(500);
             double value = random.nextDouble() * 60 + random.nextDouble() * 60 + random.nextDouble() * 60
                     + random.nextDouble() * 60+ random.nextDouble() * 60+ random.nextDouble() * 60;
 
@@ -18,5 +19,6 @@ public class MqttTester {
         }
         sensorEngine.close();
     }
+
 
 }

@@ -68,6 +68,7 @@ public class SensorEngine implements Runnable {
             e.printStackTrace();
         }
         try {
+            publisher.disconnect(150);
             publisher.close();
         } catch (MqttException e) {
             e.printStackTrace();
