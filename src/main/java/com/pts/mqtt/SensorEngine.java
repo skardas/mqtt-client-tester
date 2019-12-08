@@ -51,11 +51,12 @@ public class SensorEngine implements Runnable {
             return;
         }
     }
-    public boolean send(Object data)
+    public boolean send(String TOPIC,Object data)
     {
         try {
             publisher.publish(TOPIC, new MqttMessage(gson.toJson(data).getBytes(Charset.forName("UTF-8"))));
         } catch (MqttException e) {
+            e.printStackTrace();
             return false;
         }
         return true;
