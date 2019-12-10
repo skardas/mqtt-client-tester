@@ -12,15 +12,26 @@ public class MqttTester {
         Thread.sleep(1000);
 
         for (int i = 0; i < 10000; i++) {
-            Thread.sleep(100);
+            //Thread.sleep(50);
             double value = random.nextDouble() * 60 + random.nextDouble() * 60 + random.nextDouble() * 60
                     + random.nextDouble() * 60+ random.nextDouble() * 60+ random.nextDouble() * 60;
             for (int j = 1; j <= 10; j++) {
-                sensorEngine.send("rtu/1/Temperature/"+j,new SensorData(1,value));
+                sensorEngine.send("rtu/1/"+SensorType.values()[j%11].name()+"/"+j,new SensorData(value));
             }
         }
         sensorEngine.close();
     }
 
+    public enum SensorType {
+        Temperature, Flow, Vibration, Tilt, Torque, Pressure, Level, Ultrasonic, Light, Infrared, Accelerometer, Gyroscope;
 
+        public static SensorType toSensorType(String name){
+            for(SensorType type: values())
+            {
+                if(type.name().toLowerCase().startsWith(name))
+                    return type;
+            }
+            return SensorType.Temperature;
+        }
+    }
 }
