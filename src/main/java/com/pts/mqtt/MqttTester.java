@@ -23,6 +23,7 @@ public class MqttTester {
                  sensorEngine.send(topic,new SensorData(value));
              }
         }
+
         sensorEngine.close();
     }
 
