@@ -6,19 +6,22 @@ import java.util.Random;
 public class MqttTester {
     public static void main(String[] args) throws InterruptedException {
 
-        String topic = "rtu/10/Torque/1001";
-        SensorEngine sensorEngine = new SensorEngine("pts.batman.edu.tr", 38880,"admin","admin",topic);
+        String [] topics = new String[]{"rtu/rtu-378/sensor/sensor-1",
+                "rtu/rtu-975/sensor/sensor-2",
+                "rtu/rtu-984/sensor/sensor-3",
+                "rtu/rtu-982/sensor/sensor-4"};
+        SensorEngine sensorEngine = new SensorEngine("localhost", 38880,"admin","admin",topics[0]);
         new Thread(sensorEngine).start();
         Random random = new Random();
         Thread.sleep(1000);
 
         for (int i = 0; i < 10000; i++) {
-            Thread.sleep(50);
-            double value = random.nextDouble() * 60 + random.nextDouble() * 60 + random.nextDouble() * 60
-                    + random.nextDouble() * 60+ random.nextDouble() * 60+ random.nextDouble() * 60;
-            for (int j = 1; j <= 10; j++) {
-                sensorEngine.send(topic,new SensorData(value));
-            }
+             for (String topic: topics)
+             {
+                 double value = random.nextDouble() * 60 + random.nextDouble() * 60 + random.nextDouble() * 60
+                         + random.nextDouble() * 60+ random.nextDouble() * 60+ random.nextDouble() * 60;
+                 sensorEngine.send(topic,new SensorData(value));
+             }
         }
         sensorEngine.close();
     }
