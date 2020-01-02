@@ -77,7 +77,12 @@ public class SensorEngine implements Runnable {
         try {
 
             if(publisher.isConnected())
-                 publisher.publish(TOPIC, new MqttMessage(gson.toJson(data).getBytes(Charset.forName("UTF-8"))));
+            {
+                MqttMessage msg = new MqttMessage(gson.toJson(data).getBytes(Charset.forName("UTF-8")));
+                msg.setRetained(false);
+                msg.setQos(0);
+                publisher.publish(TOPIC, msg);
+            }
         } catch (MqttException e) {
             isRun = false;
             e.printStackTrace();
