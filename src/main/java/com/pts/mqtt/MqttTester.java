@@ -20,7 +20,8 @@ public class MqttTester {
             executorService.submit(sensorEngine[i]);
         }
 
-        executorService.awaitTermination(100, TimeUnit.SECONDS);
+        executorService.awaitTermination(120, TimeUnit.DAYS);
+        System.out.println("Closing threats");
 
         for (SensorEngine en:sensorEngine){
             en.close();
