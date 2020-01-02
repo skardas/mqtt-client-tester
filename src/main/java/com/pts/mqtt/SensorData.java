@@ -7,10 +7,13 @@ import java.util.Date;
 public class SensorData {
     double value;
     Date time;
-    public SensorData(double value) {
+
+    public SensorData(int minusTime,double value) {
         this.value = value;
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND,new Random().nextInt(3600*24*30) * -1);
+        calendar.add(Calendar.SECOND,minusTime);
         time =  calendar.getTime();
+       // time =  Calendar.getInstance().getTime();
+
     }
 }

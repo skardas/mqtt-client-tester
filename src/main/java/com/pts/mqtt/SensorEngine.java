@@ -7,6 +7,7 @@ import org.eclipse.paho.client.mqttv3.*;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 public class SensorEngine implements Runnable {
@@ -16,15 +17,16 @@ public class SensorEngine implements Runnable {
     String password;
     String publisherId = UUID.randomUUID().toString();
     IMqttClient publisher;
-    String TOPIC;
+    String [] topics;
     Gson gson;
-
-    public SensorEngine(String hostIp, int port, String username, String password, String TOPIC) {
+    Random random = new Random();
+    boolean isRun = true;
+    public SensorEngine(String hostIp, int port, String username, String password, String [] topics) {
         this.hostIp = hostIp;
         this.port = port;
         this.username = username;
         this.password = password;
-        this.TOPIC = TOPIC;
+        this.topics = topics;
         gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
     }
 
@@ -41,21 +43,39 @@ public class SensorEngine implements Runnable {
             options.setPassword(password.toCharArray());
             publisher.connect(options);
 
-            publisher.subscribe(TOPIC, (topic, msg) -> {
+            publisher.subscribe(topics[0], (topic, msg) -> {
                 byte[] payload = msg.getPayload();
-                System.out.println(new String(payload));
+                System.out.println("Topic: "+topics[0] +": received data :"+new String(payload));
             });
         }catch (Exception e)
         {
             e.printStackTrace();
             return;
         }
+        int minusTime = 3*30*24*60*60;
+        while(isRun && minusTime > 0)
+        {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (int sensorNo = 0; sensorNo < topics.length; sensorNo++) {
+                double value = random.nextDouble() * 60 + random.nextDouble() * 60 + random.nextDouble() * 60
+                        + random.nextDouble() * 60+ random.nextDouble() * 60+ random.nextDouble() * 60;
+                send(topics[sensorNo],new SensorData(minusTime--,value));
+            }
+        }
+
     }
     public boolean send(String TOPIC,Object data)
     {
         try {
-            publisher.publish(TOPIC, new MqttMessage(gson.toJson(data).getBytes(Charset.forName("UTF-8"))));
+
+            if(publisher.isConnected())
+                 publisher.publish(TOPIC, new MqttMessage(gson.toJson(data).getBytes(Charset.forName("UTF-8"))));
         } catch (MqttException e) {
+            isRun = false;
             e.printStackTrace();
             return false;
         }
@@ -64,7 +84,8 @@ public class SensorEngine implements Runnable {
 
     public void close() {
         try {
-            publisher.unsubscribe(TOPIC);
+            isRun = false;
+            publisher.unsubscribe(topics[0]);
         } catch (MqttException e) {
             e.printStackTrace();
         }

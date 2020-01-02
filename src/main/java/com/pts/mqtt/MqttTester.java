@@ -1,31 +1,32 @@
 package com.pts.mqtt;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class MqttTester {
     public static void main(String[] args) throws InterruptedException {
 
-        String [] topics = new String[]{"rtu/rtu-378/sensor/sensor-1",
-                "rtu/rtu-975/sensor/sensor-2",
-                "rtu/rtu-984/sensor/sensor-3",
-                "rtu/rtu-982/sensor/sensor-4"};
-        SensorEngine sensorEngine = new SensorEngine("localhost", 38880,"admin","admin",topics[0]);
-        new Thread(sensorEngine).start();
-        Random random = new Random();
-        Thread.sleep(1000);
-
-        for (int i = 0; i < 10000; i++) {
-             for (String topic: topics)
-             {
-                 double value = random.nextDouble() * 60 + random.nextDouble() * 60 + random.nextDouble() * 60
-                         + random.nextDouble() * 60+ random.nextDouble() * 60+ random.nextDouble() * 60;
-                 sensorEngine.send(topic,new SensorData(value));
-             }
+        String [][] topics = new String[10][12];
+        for (int i = 0; i < topics.length; i++) {
+            for (int j = 0; j < topics[0].length; j++) {
+                topics[i][j] = "rtu/pn-"+(i+1)+"/sensor/"+ (j+1);
+            }
+        }
+        ExecutorService executorService = Executors.newFixedThreadPool(topics.length);
+        SensorEngine [] sensorEngine = new SensorEngine[topics.length];
+        for (int i = 0; i < sensorEngine.length; i++) {
+            sensorEngine[i] = new SensorEngine("pts.batman.edu.tr", 38880,"credential"+(i+1),"credential"+(i+1),topics[i]);
+            executorService.submit(sensorEngine[i]);
         }
 
-        sensorEngine.close();
-    }
+        executorService.awaitTermination(100, TimeUnit.SECONDS);
+
+        for (SensorEngine en:sensorEngine){
+            en.close();
+        }
+
+     }
 
     public enum SensorType {
         Temperature, Flow, Vibration, Tilt, Torque, Pressure, Level, Ultrasonic, Light, Infrared, Accelerometer, Gyroscope;
