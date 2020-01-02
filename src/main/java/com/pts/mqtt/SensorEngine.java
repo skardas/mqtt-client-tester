@@ -5,12 +5,9 @@ import com.google.gson.GsonBuilder;
 import org.eclipse.paho.client.mqttv3.*;
 
 import java.nio.charset.Charset;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
-public class SensorEngine implements Runnable {
+public class SensorEngine extends Thread {
     String hostIp;
     int port;
     String username;
@@ -67,9 +64,16 @@ public class SensorEngine implements Runnable {
             for (int sensorNo = 0; sensorNo < topics.length; sensorNo++) {
                 double value = random.nextDouble() * 60 + random.nextDouble() * 60 + random.nextDouble() * 60
                         + random.nextDouble() * 60+ random.nextDouble() * 60+ random.nextDouble() * 60;
-                send(topics[sensorNo],new SensorData(calendar.getTime(),value));
+                send(topics[sensorNo],getMap(sensorNo+1,calendar.getTime(),value));
             }
         }
+
+    }
+    public HashMap getMap(int sensorNo, Date time , Double value){
+        HashMap map = new HashMap();
+        map.put("time", time);
+        map.put("value"+sensorNo,value);
+        return  map;
 
     }
     public boolean send(String TOPIC,Object data)
