@@ -52,18 +52,22 @@ public class SensorEngine implements Runnable {
             e.printStackTrace();
             return;
         }
-        int minusTime = 3*30*24*60*60;
-        while(isRun && minusTime > 0)
+        int minusTime = -3*30*24*60*60;
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND,minusTime);
+
+        while(isRun && minusTime++ < 0)
         {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            calendar.add(Calendar.SECOND,1);
             for (int sensorNo = 0; sensorNo < topics.length; sensorNo++) {
                 double value = random.nextDouble() * 60 + random.nextDouble() * 60 + random.nextDouble() * 60
                         + random.nextDouble() * 60+ random.nextDouble() * 60+ random.nextDouble() * 60;
-                send(topics[sensorNo],new SensorData(minusTime--,value));
+                send(topics[sensorNo],new SensorData(calendar.getTime(),value));
             }
         }
 

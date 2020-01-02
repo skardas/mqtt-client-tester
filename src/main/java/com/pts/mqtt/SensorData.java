@@ -1,18 +1,14 @@
 package com.pts.mqtt;
 
-  import java.util.Calendar;
-import java.util.Date;
-  import java.util.Random;
+ import java.util.Date;
 
 public class SensorData {
     double value;
     Date time;
 
-    public SensorData(int minusTime,double value) {
+    public SensorData(Date time,double value) {
         this.value = value;
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND,minusTime);
-        time =  calendar.getTime();
+       this.time = time;
        // time =  Calendar.getInstance().getTime();
 
     }
